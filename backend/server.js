@@ -71,4 +71,9 @@ server.use((err, req, res, next) => { // eslint-disable-line
   })
 })
 
+const PORT = process.env.PORT || 9000
+server.listen(PORT, () => {
+  console.log(`Server is running on http://localhost:${PORT}`)
+})
+
 module.exports = server
