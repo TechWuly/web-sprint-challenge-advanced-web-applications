@@ -33,7 +33,9 @@ export default function Articles({
       {
         !articles.length
           ? 'No articles yet'
-          : articles.map(art => {
+          : articles
+          .filter(art => art.article_id !== currentArticleId)
+          .map(art => {
             return (
               <div className="article" key={art.article_id}>
                 <div>

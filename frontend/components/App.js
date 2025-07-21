@@ -68,11 +68,11 @@ export default function App() {
     // if it's a 401 the token might have gone bad, and we should redirect to login.
     try {
       const response = await axios.get(articlesUrl, {
-        Headers: {
+        headers: {
           Authorization : localStorage.getItem('token')
         }
       });
-      setArticles([...articles, response.data.articles]);
+      setArticles(response.data.articles);
       setMessage(response.data.message); 
        
     } catch(err){
@@ -97,8 +97,9 @@ export default function App() {
           Authorization: localStorage.getItem('token')
         }
       });
-      setArticles([...articles, response.data.articles]);
+      setArticles([...articles, response.data.article]);
       setMessage(response.data.message);
+      setCurrentArticleId(null);
     
     } catch(err){
       setMessage(err.response?.data?.message|| 'Failed to create an article');
@@ -118,7 +119,7 @@ export default function App() {
     try{
       const response = await axios.put(`${articlesUrl}/${article_id}`, article, {
         headers: {
-          Authorizaton:localStorage.getItem('token')
+          Authorization:localStorage.getItem('token')
         }
       });
 
@@ -141,21 +142,21 @@ export default function App() {
 
   const deleteArticle = async ( article_id) => {
     // ✨ implement
-    spinnerOn(true);
+    setSpinnerOn(true);
      try{
-      await axios.delete(`${articlesUrl}/${article_id}`, {
+     const response = await axios.delete(`${articlesUrl}/${article_id}`, {
         headers:{
           Authorization: localStorage.getItem('token')
         }
       });
 
       setArticles(articles.filter(art => art.article_id !== article_id));
-      setMessage('article_deleted');
+      setMessage(response.data.message);
       
      } catch(err){
        setMessage(err.response?.data?.message || 'Failed to delete article');
      }finally{
-      spinnerOn(false);
+      setSpinnerOn(false);
      }
   };
 
@@ -178,7 +179,7 @@ export default function App() {
               <ArticleForm 
                postArticle={postArticle}
                updateArticle={updateArticle}
-               currentArticle={articles.find(art => art.article_id === currentArticleId)}
+               currentArticle={currentArticleId ? articles.find (art => art.article_id === currentArticleId): null}
                setCurrentArticleId={setCurrentArticleId}
               />
 
